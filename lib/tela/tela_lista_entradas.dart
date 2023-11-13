@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projeto1/formulario_dinamico.dart';
+import 'package:flutter_projeto1/tela/tela_cadastrar_usuario.dart';
 
 class TelaListagem extends StatefulWidget {
   const TelaListagem({Key? key}) : super(key: key);
@@ -19,7 +21,7 @@ class _TelaListagemState extends State<TelaListagem> {
     'Fermentado': false,
     'Preparo': false,
     'Recozimento': false,
-    'Retorno Sessão': false,
+    'Sessão': false,
   };
 
   void _selecionarTipo(String tipo) {
@@ -29,7 +31,18 @@ class _TelaListagemState extends State<TelaListagem> {
         botoesSelecionados[key] = key == tipo;
       });
     });
-    /// lógica de transição
+
+    if (tipoSelecionado.isNotEmpty) {
+      // Navegar para a tela de formulário dinâmico e passar informações relevantes
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FormularioDinamico(
+            tipoSelecionado: tipoSelecionado,
+          ),
+        ),
+      );
+    }
   }
 
   int _selectedIndex = 0;
@@ -44,7 +57,7 @@ class _TelaListagemState extends State<TelaListagem> {
         ),
         backgroundColor: topColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -77,7 +90,7 @@ class _TelaListagemState extends State<TelaListagem> {
               SizedBox(height: 8.0),
               _buildTipoButton('Recozimento', Icons.whatshot),
               SizedBox(height: 8.0),
-              _buildTipoButton('Retorno Sessão', Icons.change_circle),
+              _buildTipoButton('Sessão', Icons.change_circle),
               SizedBox(height: 16.0),
             ],
           ),
@@ -114,7 +127,9 @@ class _TelaListagemState extends State<TelaListagem> {
     return ElevatedButton.icon(
       onPressed: () => _selecionarTipo(tipo),
       style: ElevatedButton.styleFrom(
-        primary: (botoesSelecionados[tipo] ?? false) ? Colors.orangeAccent : Color.fromARGB(255, 2, 159, 212),
+        primary: (botoesSelecionados[tipo] ?? false)
+            ? Colors.orangeAccent
+            : Color.fromARGB(255, 2, 159, 212),
         onPrimary: Colors.white,
         textStyle: TextStyle(fontSize: 25.0),
         side: BorderSide(color: Colors.white),
@@ -125,9 +140,17 @@ class _TelaListagemState extends State<TelaListagem> {
   }
 
   void _onItemTapped(int index) {
-    ///logica da barra
     setState(() {
       _selectedIndex = index;
+      if (index == 2) {
+        // Navegar para a tela de cadastro de usuário
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TelaCadastrarUsuario(),
+          ),
+        );
+      }
     });
   }
 }
