@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto1/formulario_dinamico.dart';
 import 'package:flutter_projeto1/tela/tela_cadastrar_usuario.dart';
+import 'package:flutter_projeto1/tela/tela_login.dart'; // Importe a tela de login
+
+import 'enum_bar.dart';
 
 class TelaListagem extends StatefulWidget {
   const TelaListagem({Key? key}) : super(key: key);
@@ -10,8 +14,8 @@ class TelaListagem extends StatefulWidget {
 }
 
 class _TelaListagemState extends State<TelaListagem> {
-  Color topColor = Color.fromARGB(255, 2, 159, 212);
-  Color bottomColor = Color.fromARGB(255, 168, 227, 247);
+  Color topColor = const Color.fromARGB(255, 2, 159, 212);
+  Color bottomColor = const Color.fromARGB(255, 168, 227, 247);
   String tipoSelecionado = '';
 
   Map<String, bool> botoesSelecionados = {
@@ -33,7 +37,6 @@ class _TelaListagemState extends State<TelaListagem> {
     });
 
     if (tipoSelecionado.isNotEmpty) {
-      // Navegar para a tela de formulário dinâmico e passar informações relevantes
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -51,13 +54,13 @@ class _TelaListagemState extends State<TelaListagem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Selecione o tipo desejado',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: topColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -72,32 +75,32 @@ class _TelaListagemState extends State<TelaListagem> {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               _buildTipoButton('Borra', Icons.recycling),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               _buildTipoButton('Doação', Icons.favorite),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               _buildTipoButton('Empréstimo', Icons.swap_horiz),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               _buildTipoButton('Fermentado', Icons.bubble_chart),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               _buildTipoButton('Preparo', Icons.groups),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               _buildTipoButton('Recozimento', Icons.whatshot),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               _buildTipoButton('Sessão', Icons.change_circle),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
             ],
           ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -114,6 +117,10 @@ class _TelaListagemState extends State<TelaListagem> {
             icon: Icon(Icons.search),
             label: 'Consulta',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.exit_to_app),
+            label: 'Sair',
+          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
@@ -127,12 +134,12 @@ class _TelaListagemState extends State<TelaListagem> {
     return ElevatedButton.icon(
       onPressed: () => _selecionarTipo(tipo),
       style: ElevatedButton.styleFrom(
-        primary: (botoesSelecionados[tipo] ?? false)
+        foregroundColor: Colors.white,
+        backgroundColor: (botoesSelecionados[tipo] ?? false)
             ? Colors.orangeAccent
-            : Color.fromARGB(255, 2, 159, 212),
-        onPrimary: Colors.white,
-        textStyle: TextStyle(fontSize: 25.0),
-        side: BorderSide(color: Colors.white),
+            : const Color.fromARGB(255, 2, 159, 212),
+        textStyle: const TextStyle(fontSize: 25.0),
+        side: const BorderSide(color: Colors.white),
       ),
       icon: Icon(icon),
       label: Text(tipo),
@@ -142,15 +149,38 @@ class _TelaListagemState extends State<TelaListagem> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      if (index == 2) {
-        // Navegar para a tela de cadastro de usuário
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TelaCadastrarUsuario(),
-          ),
-        );
+
+      switch (index) {
+        case 0:
+          Navigator.pushReplacementNamed(context, '/home');
+          break;
+        case 1:
+          Navigator.pushReplacementNamed(context, '/registro');
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => TelaCadastrarUsuario()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacementNamed(context, '/consulta');
+          break;
+        case 4:
+          _signOut();
+          break;
+        default:
+        // Adicione a lógica padrão, se necessário
       }
     });
+  }
+
+  void _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, '/sair');
+    } catch (e) {
+      print('Erro ao fazer logout: $e');
+    }
   }
 }

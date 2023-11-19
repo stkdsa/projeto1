@@ -1,29 +1,37 @@
-import 'model_vegetal.dart';
+
+import 'model_movimentacao_vegetal.dart';
 
 class Estoque {
-  List<Vegetal> entradas = [];
+  List<MovimentacaoVegetal> movimentacoes = [];
 
-  void adicionarEntrada(Vegetal entrada) {
-    entradas.add(entrada);
+  void adicionarMovimentacao(MovimentacaoVegetal movimentacao) {
+    movimentacoes.add(movimentacao);
   }
 
-  Map<String, double> calcularSaldoPorEntrada() {
-    Map<String, double> saldoPorEntrada = {};
+  Map<String, double> calcularSaldoPorOrigem() {
+    Map<String, double> saldoPorOrigem = {};
 
-    for (var entrada in entradas) {
-      saldoPorEntrada[entrada.origem] = (saldoPorEntrada[entrada.origem] ?? 0) + entrada.litros;
+    for (var movimentacao in movimentacoes) {
+      if (movimentacao.isEntrada) {
+        saldoPorOrigem[movimentacao.origem] =
+            (saldoPorOrigem[movimentacao.origem] ?? 0) + (movimentacao.litros ?? 0).toDouble();
+      } else {
+        saldoPorOrigem[movimentacao.origem] =
+            (saldoPorOrigem[movimentacao.origem] ?? 0) - (movimentacao.litros ?? 0).toDouble();
+      }
     }
 
-    return saldoPorEntrada;
+    return saldoPorOrigem;
   }
+
 
   double calcularTotalVegetal() {
-    double totalVegetal = 0;
+    double saldoTotal = 0;
 
-    for (var entrada in entradas) {
-      totalVegetal += entrada.litros;
+    for (var movimentacao in movimentacoes) {
+      saldoTotal += movimentacao.isEntrada ? (movimentacao.litros ?? 0) : -(movimentacao.litros ?? 0);
     }
 
-    return totalVegetal;
+    return saldoTotal;
   }
 }

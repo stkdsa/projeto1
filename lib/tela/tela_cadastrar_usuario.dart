@@ -1,27 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projeto1/servicos/autenticacao_servico.dart';
 
 class TelaCadastrarUsuario extends StatefulWidget {
   const TelaCadastrarUsuario({Key? key}) : super(key: key);
 
+  get emailController => null;
+
+  get senhaController => null;
+
   @override
   _TelaCadastrarUsuarioState createState() => _TelaCadastrarUsuarioState();
+
 }
 
 class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
-    with SingleTickerProviderStateMixin {
+  with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
+  bool obscureText = true;
 
-  Color topColor = Color.fromARGB(255, 101, 128, 51);
+  Color topColor = const Color.fromARGB(255, 101, 128, 51);
+  late Color iconColor = Colors.grey;
   final _formKey = GlobalKey<FormState>();
   int _selectedIndex = 0;
+  final AutenticacaoServico _autServ = AutenticacaoServico();
 
-
-
-  TextEditingController _nomeController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _senhaController = TextEditingController();
-  TextEditingController _senhaConfirmacaoController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+  final TextEditingController _senhaConfirmacaoController = TextEditingController();
 
   @override
   void initState() {
@@ -29,7 +36,7 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 3),
     );
 
     _opacityAnimation =
@@ -39,7 +46,7 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
       setState(() {});
     });
 
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       _controller.forward();
     });
   }
@@ -48,13 +55,13 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: topColor,
-        title: Text("Cadastro de Usuários"),
+        backgroundColor: const Color.fromARGB(255, 87, 150, 92),
+        title: const Text("Cadastro de Usuários"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: MediaQuery
                 .of(context)
                 .size
@@ -70,21 +77,22 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
                         TextFormField(
                           controller: _nomeController,
                           autofocus: true,
-                          decoration: InputDecoration(
+                          decoration:  InputDecoration(
                             hintText: "Nome e sobrenome do novo usuário",
-                            prefixIcon: Icon(Icons.person),
+                            prefixIcon: Icon(Icons.person, color: iconColor),
                             fillColor: Colors.white,
                             filled: true,
                             border: OutlineInputBorder(),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: BorderSide(color: const Color.fromARGB(255, 87, 150, 92),),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: BorderSide(color: iconColor),
+
                             ),
                           ),
                           validator: (String? value) {
@@ -100,20 +108,20 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                             return null;
                           },
                         ),
-                        SizedBox(height: 19),
+                        const SizedBox(height: 19),
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
                             hintText: "E-mail do novo usuário",
-                            prefixIcon: Icon(Icons.mail_outline_outlined),
+                            prefixIcon: Icon(Icons.mail_outline_outlined, color: iconColor),
                             fillColor: Colors.white,
                             filled: true,
                             border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Color.fromARGB(255, 87, 150, 92),),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                           ),
                           validator: (String? value) {
@@ -126,23 +134,23 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                             return null;
                           },
                         ),
-                        SizedBox(height: 19),
+                        const SizedBox(height: 19),
                         TextFormField(
 
                           decoration: InputDecoration(
                             hintText: "Digite a senha",
-                            prefixIcon: Icon(Icons.key_sharp, color: topColor),
+                            prefixIcon: Icon(Icons.key_sharp, color: iconColor),
                             fillColor: Colors.white,
                             filled: true,
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: const Color.fromARGB(255, 87, 150, 92),),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(64),
                               borderSide: const BorderSide(color: Colors.red),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                           ),
                           controller: _senhaController,
@@ -150,7 +158,7 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                             if (value == null || value.isEmpty) {
                               return "O campo senha precisa ser preenchido";
                             }
-                            String? senhaErro = senhaValidator(value);
+                            String? senhaErro = validadorSenha(value);
                             if (senhaErro != null) {
                               return senhaErro;
                             }
@@ -158,22 +166,33 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                           },
                           obscureText: true,
                         ),
-                        SizedBox(height: 19),
+                        const SizedBox(height: 19),
                         TextFormField(
                           decoration: InputDecoration(
                             hintText: "Confirme a senha",
-                            prefixIcon: Icon(Icons.check, color: topColor),
+                            prefixIcon: Icon(Icons.check, color: iconColor),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                obscureText ? Icons.visibility : Icons.visibility_off,
+                                color: iconColor,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              },
+                            ),
                             fillColor: Colors.white,
                             filled: true,
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: const Color.fromARGB(255, 87, 150, 92),),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(64),
                               borderSide: const BorderSide(color: Colors.red),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                           ),
                           controller: _senhaConfirmacaoController,
@@ -182,7 +201,6 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                               return "O campo de confirmação de senha precisa ser preenchido";
                             }
 
-                            // Verifica se a senha de confirmação é igual à senha original
                             if (value != _senhaController.text) {
                               return "As senhas não coincidem";
                             }
@@ -191,22 +209,21 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                           },
                           obscureText: true,
                         ),
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
                         ElevatedButton(
-                          onPressed: botaoPrincipalClicado,
+                          onPressed: CadastrarClicado,
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.green,
-                            onPrimary: Colors.white,
+                            foregroundColor: Colors.white, backgroundColor: Colors.green,
                             elevation: 20,
                             shadowColor: Colors.black54,
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
                           ),
-                          child: Text(
+                          child: const Text(
                             "Cadastrar Novo Usuário",
                             style: TextStyle(fontSize: 19),
                           ),
                         ),
-                        SizedBox(height: 60),
+                        const SizedBox(height: 60),
                       ],
                     ),
                   ),
@@ -217,7 +234,7 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -233,10 +250,15 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: 'Consulta',
+
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.exit_to_app),
+            label: 'Sair',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: topColor,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
@@ -249,16 +271,31 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
     super.dispose();
   }
 
-  void botaoPrincipalClicado() {
+  void CadastrarClicado() {
+    String nome = _nomeController.text;
+    String email = _emailController.text;
+    String senha = _senhaController.text;
+    String confirmaSenha = _senhaConfirmacaoController.text;
+
     if (_formKey.currentState!.validate()) {
-      ///tem eh chão
+      print("Entrada validada");
+      _autServ.logarUsuario(email: email, senha: senha).then((String? erro) => null);
+      print("$_nomeController,$_emailController,$_senhaController,$_senhaConfirmacaoController,");
+      _autServ.cadastrarUsuario(nome: nome, email: email, senha: senha, confirmaSenha: confirmaSenha);
+
+      _nomeController.clear();
+      _emailController.clear();
+      _senhaController.clear();
+      _senhaConfirmacaoController.clear();
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Cadastro realizado com sucesso!"),
         ),
       );
     }
   }
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -266,7 +303,7 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
     });
   }
 
-  String? senhaValidator(String? value) {
+  String? validadorSenha(String? value) {
     List<String> mensagensValidacao = [];
 
     if (value == null || !value.contains(RegExp(r'[A-Z]'))) {

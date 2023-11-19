@@ -9,13 +9,11 @@ class AutenticacaoServico {
     required String confirmaSenha}) async {
     try {
       UserCredential userCredential = await _firebaseAuth
-          .createUserWithEmailAndPassword(
-          email: email,
-          password: senha);
+          .createUserWithEmailAndPassword(email: email, password: senha);
+
       await userCredential.user!.updateDisplayName(nome);
       return null;
-    }
-    on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       if (e.code == "email-already-in-use") {
         return "Usuário já cadastrado";
       }
@@ -23,21 +21,31 @@ class AutenticacaoServico {
     }
   }
 
-  Future<String?> logarUsuario({
-    required String email,
-    required String senha})async{
+  Future<String?> logarUsuario(
+      {required String email, required String senha}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: senha);
       return null;
-    } on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       return e.message;
     }
-
-
   }
-Future <void> deslogar() async{
-    return _firebaseAuth.signOut();
-}
 
+  Future<void> deslogar() async {
+    return _firebaseAuth.signOut();
+  }
+
+  redefinicaoSenha({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if(e.code=="user-not-found"){
+        return "E-mail não cadastrado";
+
+      }
+      return e.code;
+    }
+    return null;
+  }
 }

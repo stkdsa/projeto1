@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FormularioDinamico extends StatefulWidget {
@@ -23,10 +22,21 @@ class _FormularioDinamicoState extends State<FormularioDinamico> {
         title: Text('Cadastro - ${widget.tipoSelecionado}'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            ///falta eh coisa...kkkk
+
+            /// Adicione aqui os widgets que você deseja exibir no corpo da tela
+            // Exemplo:
+            TextField(
+              controller: campo1Controller,
+              decoration: InputDecoration(labelText: 'Campo 1'),
+            ),
+            TextField(
+              controller: campo2Controller,
+              decoration: InputDecoration(labelText: 'Campo 2'),
+            ),
+            // ... outros widgets
           ],
         ),
       ),
