@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto1/formulario_dinamico.dart';
 import 'package:flutter_projeto1/tela/tela_cadastrar_usuario.dart';
+import 'package:flutter_projeto1/tela/tela_home.dart';
 import 'package:flutter_projeto1/tela/tela_lista_entradas.dart';
 import 'package:flutter_projeto1/servicos/autenticacao_servico.dart';
 
@@ -54,11 +55,9 @@ class _TelaLoginState extends State<TelaLogin>
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+          height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/images/tela1.png"),
@@ -94,33 +93,35 @@ class _TelaLoginState extends State<TelaLogin>
                               ),
                             ),
                             const SizedBox(height: 32),
-                            TextFormField(
-                              controller: _emailLoginController,
-                              autofocus: true,
-                              decoration: const InputDecoration(
-                                hintText: "E-mail",
-                                prefixIcon: Icon(Icons.mail_outline_outlined),
-                                fillColor: Colors.white,
-                                filled: true,
-                                border: OutlineInputBorder(),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _emailLoginController,
+                                autofocus: true,
+                                decoration: const InputDecoration(
+                                  hintText: "E-mail",
+                                  prefixIcon: Icon(Icons.mail_outline_outlined),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  border: OutlineInputBorder(),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 10),
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
-                                ),
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 10),
+                                validator: (String? value) {
+                                  if (value == null) {
+                                    return "O campo e-mail precisa ser preenchido";
+                                  }
+                                  if (!value.contains("@")) {
+                                    return "O e-mail não é válido";
+                                  }
+                                  return null;
+                                },
                               ),
-                              validator: (String? value) {
-                                if (value == null) {
-                                  return "O campo e-mail precisa ser preenchido";
-                                }
-                                if (!value.contains("@")) {
-                                  return "O e-mail não é válido";
-                                }
-                                return null;
-                              },
                             ),
                             const SizedBox(height: 19),
                             TextFormField(
@@ -253,7 +254,7 @@ class _TelaLoginState extends State<TelaLogin>
         print("Login bem-sucedido");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TelaListagem()),
+          MaterialPageRoute(builder: (context) => TelaHome()),
         );
       } else {
         String mensagemErro = _getMensagemErro(resultado);

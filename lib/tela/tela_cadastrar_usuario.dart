@@ -1,5 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto1/servicos/autenticacao_servico.dart';
+import 'package:flutter_projeto1/tela/tela_consulta.dart';
+import 'package:flutter_projeto1/tela/tela_home.dart';
+import 'package:flutter_projeto1/tela/tela_registro_bool.dart';
+import 'package:flutter_projeto1/tela/tela_registro_entrada.dart';
+import '../componentes/bottom_nav_bar.dart';
+
 
 class TelaCadastrarUsuario extends StatefulWidget {
   const TelaCadastrarUsuario({Key? key}) : super(key: key);
@@ -18,8 +25,11 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
   bool obscureText = true;
+  bool mostrarSenhaConfirmacao = false;
+
 
   Color topColor = const Color.fromARGB(255, 101, 128, 51);
+  Color buttomColor = Color.fromARGB(255, 87, 150, 92);
   late Color iconColor = Colors.grey;
   final _formKey = GlobalKey<FormState>();
   int _selectedIndex = 0;
@@ -36,7 +46,7 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 1),
     );
 
     _opacityAnimation =
@@ -57,6 +67,10 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 87, 150, 92),
         title: const Text("Cadastro de Usuários"),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back,color: Colors.white,),
+              onPressed: () {
+                Navigator.of(context).pop();}),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -78,35 +92,37 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const SizedBox(height: 32),
-                        TextFormField(
-                          controller: _nomeController,
-                          autofocus: true,
-                          decoration:  InputDecoration(
-                            hintText: "Nome e sobrenome do novo usuário",
-                            prefixIcon: Icon(Icons.person, color: iconColor),
-                            fillColor: Colors.white,
-                            filled: true,
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: const Color.fromARGB(255, 87, 150, 92),),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: iconColor),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _nomeController,
+                            autofocus: true,
+                            decoration:  InputDecoration(
+                              hintText: "Nome e sobrenome do novo usuário",
+                              prefixIcon: Icon(Icons.person, color: iconColor),
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: const Color.fromARGB(255, 87, 150, 92),),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: iconColor),
 
+                              ),
                             ),
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return "O campo deverá ser preenchido com nome e sobrenome do usuário";
+                              }
+                              List<String> partesNome = value.split(' ');
+
+                              if (partesNome.length < 2) {
+                                return "Por favor, informe o nome e o sobrenome";
+                              }
+
+                              return null;
+                            },
                           ),
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return "O campo deverá ser preenchido com nome e sobrenome do usuário";
-                            }
-                            List<String> partesNome = value.split(' ');
-
-                            if (partesNome.length < 2) {
-                              return "Por favor, informe o nome e o sobrenome";
-                            }
-
-                            return null;
-                          },
                         ),
                         const SizedBox(height: 19),
                         TextFormField(
@@ -138,6 +154,7 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                         TextFormField(
 
                           decoration: InputDecoration(
+                            labelText: "Senha",
                             hintText: "Digite a senha",
                             prefixIcon: Icon(Icons.key_sharp, color: iconColor),
                             fillColor: Colors.white,
@@ -154,6 +171,10 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                             ),
                           ),
                           controller: _senhaController,
+                          onTap: () {
+                            String mensagem = "Condições para a senha:\n\n- Deve conter pelo menos uma letra maiúscula\n- Deve conter pelo menos um caractere especial\n- Deve conter pelo menos um número\n- Deve ter exatamente 6 caracteres";
+                            exibirMensagemValidacao(mensagem);
+                          },
                           validator: (String? value) {
                             if (value == null || value.isEmpty) {
                               return "O campo senha precisa ser preenchido";
@@ -167,48 +188,38 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
                           obscureText: true,
                         ),
                         const SizedBox(height: 19),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            hintText: "Confirme a senha",
-                            prefixIcon: Icon(Icons.check, color: iconColor),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                obscureText ? Icons.visibility : Icons.visibility_off,
-                                color: iconColor,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  obscureText = !obscureText;
-                                });
-                              },
-                            ),
-                            fillColor: Colors.white,
-                            filled: true,
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: const Color.fromARGB(255, 87, 150, 92),),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(64),
-                              borderSide: const BorderSide(color: Colors.red),
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                          ),
-                          controller: _senhaConfirmacaoController,
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return "O campo de confirmação de senha precisa ser preenchido";
-                            }
+                TextFormField(
 
-                            if (value != _senhaController.text) {
-                              return "As senhas não coincidem";
-                            }
+                controller: _senhaConfirmacaoController,
+                obscureText: !mostrarSenhaConfirmacao,
+                decoration: InputDecoration(
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: const Color.fromARGB(255, 87, 150, 92),),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(64),
+                    borderSide: const BorderSide(color: Colors.red),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                hintText: "Confirme a senha",
+                prefixIcon: Icon(Icons.check, color: iconColor),
+                suffixIcon: IconButton(
+                icon: Icon(
+                mostrarSenhaConfirmacao ? Icons.visibility : Icons.visibility_off,
+                color: iconColor,
+                ),
 
-                            return null;
-                          },
-                          obscureText: true,
-                        ),
+                onPressed: () {
+                setState(() {
+                mostrarSenhaConfirmacao = !mostrarSenhaConfirmacao;
+                });
+                },
+                ),
+                ),
+
+                ),
                         const SizedBox(height: 32),
                         ElevatedButton(
                           onPressed: CadastrarClicado,
@@ -233,34 +244,10 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Registro',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add),
-            label: 'Cadastro',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Consulta',
-
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.exit_to_app),
-            label: 'Sair',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: topColor,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+      bottomNavigationBar: BottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+        onSignOut: _signOut,
       ),
     );
   }
@@ -300,7 +287,68 @@ class _TelaCadastrarUsuarioState extends State<TelaCadastrarUsuario>
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const TelaHome()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const TelaRegistroBool()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const TelaCadastrarUsuario()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) =>  TelaConsulta()),
+          );
+          break;
+        case 4:
+          _signOut();
+          break;
+        default:
+
+      }
     });
+  }
+
+  void _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, '/sair');
+    } catch (e) {
+      print('Erro ao fazer logout: $e');
+    }
+  }
+
+  void exibirMensagemValidacao(String mensagem) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Condições de Validação"),
+          content: Text(mensagem),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   String? validadorSenha(String? value) {

@@ -6,3 +6,4 @@ enum Bar {
   Consulta,
   Sair,
 }
+

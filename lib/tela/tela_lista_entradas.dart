@@ -2,8 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto1/formulario_dinamico.dart';
 import 'package:flutter_projeto1/tela/tela_cadastrar_usuario.dart';
+import 'package:flutter_projeto1/tela/tela_consulta.dart';
+import 'package:flutter_projeto1/tela/tela_home.dart';
 import 'package:flutter_projeto1/tela/tela_login.dart'; // Importe a tela de login
+import 'package:flutter_projeto1/tela/tela_registro_bool.dart';
 
+import '../componentes/bottom_nav_bar.dart';
 import 'enum_bar.dart';
 
 class TelaListagem extends StatefulWidget {
@@ -99,35 +103,15 @@ class _TelaListagemState extends State<TelaListagem> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Registro',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add),
-            label: 'Cadastro',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Consulta',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.exit_to_app),
-            label: 'Sair',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+      bottomNavigationBar: BottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+        onSignOut: _signOut,
       ),
     );
+
+
+
   }
 
   Widget _buildTipoButton(String tipo, IconData icon) {
@@ -152,25 +136,34 @@ class _TelaListagemState extends State<TelaListagem> {
 
       switch (index) {
         case 0:
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const TelaHome()),
+          );
           break;
         case 1:
-          Navigator.pushReplacementNamed(context, '/registro');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const TelaRegistroBool()),
+          );
           break;
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => TelaCadastrarUsuario()),
+            MaterialPageRoute(builder: (context) => const TelaCadastrarUsuario()),
           );
           break;
         case 3:
-          Navigator.pushReplacementNamed(context, '/consulta');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) =>  TelaConsulta()),
+          );
           break;
         case 4:
           _signOut();
           break;
         default:
-        // Adicione a lógica padrão, se necessário
+
       }
     });
   }
@@ -178,7 +171,7 @@ class _TelaListagemState extends State<TelaListagem> {
   void _signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-      Navigator.pushReplacementNamed(context, '/sair');
+      Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
       print('Erro ao fazer logout: $e');
     }
